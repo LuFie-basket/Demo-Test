@@ -4,28 +4,133 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dienstplan Pro – Erweiterte Demo</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <style>
-:root{--bg:#f3f6fb;--card:#fff;--text:#172033;--muted:#667085;--line:#dfe4ec;--accent:#2857d9;--accent2:#eef3ff;--ok:#157347;--warn:#b36b00;--bad:#b42318}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}header{background:#111827;color:#fff;padding:18px 22px}.shell{max-width:1280px;margin:auto}.main{padding:18px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.muted{color:var(--muted);font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--accent2);font-size:12px}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tabs button,.btn{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:10px;cursor:pointer}.tabs button.active,.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}.metric strong{font-size:27px;display:block;margin-top:5px}.view.hidden{display:none}.stack{display:grid;gap:10px}.row{display:flex;gap:12px;align-items:center;justify-content:space-between}.item{border:1px solid var(--line);border-radius:12px;padding:11px}.callout{border-left:4px solid var(--warn);background:#fff7e9;border-radius:10px;padding:11px}.okbox{border-left:4px solid var(--ok);background:#effaf4;border-radius:10px;padding:11px}.badbox{border-left:4px solid var(--bad);background:#fff1f1;border-radius:10px;padding:11px}label{display:grid;gap:5px;font-size:13px}input,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font:inherit}table{width:100%;border-collapse:collapse}th,td{font-size:13px;text-align:left;padding:9px;border-bottom:1px solid var(--line);vertical-align:top}.scroll{overflow:auto}.calendar{display:grid;grid-template-columns:120px repeat(7,minmax(110px,1fr));min-width:920px}.calcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;min-height:88px;background:#fff}.calhead{background:#eef2f7;font-weight:600;min-height:auto}.shift{padding:6px;border-radius:8px;background:var(--accent2);margin-top:5px;font-size:12px}.danger{color:var(--bad)}.warning{color:var(--warn)}.success{color:var(--ok)}.progress{height:10px;background:#e7ebf1;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent)}.chartrow{display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{font-size:12px;padding:6px 9px}.pill{padding:4px 8px;border-radius:999px;font-size:11px;background:#eef2f7}.integr{display:flex;align-items:center;justify-content:space-between;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:#9ca3af}.dot.green{background:#16a34a}
-@media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr 1fr}.top{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}.main{padding:12px}.row{align-items:flex-start;flex-direction:column}}
+:root{
+  --bg:#f6f8fc;--surface:#ffffff;--surface-soft:#f8fafc;--text:#172033;
+  --muted:#667085;--line:#e3e8ef;--primary:#2457d6;--primary-dark:#1945b4;
+  --primary-soft:#eef3ff;--ok:#18794e;--ok-soft:#ecfdf3;--warn:#a15c00;
+  --warn-soft:#fff8e8;--bad:#b42318;--bad-soft:#fff1f0;--sidebar:#14213d;
+  --sidebar-soft:#1d2c4d;--shadow:0 8px 30px rgba(16,24,40,.07)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid rgba(36,87,214,.2);outline-offset:1px}
+.app-shell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100vh;background:var(--sidebar);color:#fff;padding:24px 16px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px}
+.brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5f8bff,#2857d9);display:grid;place-items:center;font-weight:800;box-shadow:0 8px 22px rgba(36,87,214,.35)}
+.brand strong{display:block;font-size:17px}
+.brand small{display:block;color:#b8c3d9;margin-top:2px}
+.tabs{display:grid;gap:5px}
+.tabs button{width:100%;border:0;background:transparent;color:#c8d2e5;padding:11px 12px;border-radius:10px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:10px;font-weight:600}
+.tabs button:hover{background:var(--sidebar-soft);color:#fff}
+.tabs button.active{background:#fff;color:var(--sidebar);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+.nav-icon{width:22px;text-align:center;font-size:16px}
+.sidebar-foot{margin-top:auto;padding:12px;border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#c8d2e5;font-size:12px;line-height:1.5}
+.workspace{min-width:0}
+.topbar{height:72px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+.topbar-title strong{display:block;font-size:16px}.topbar-title span{font-size:13px;color:var(--muted)}
+.topbar-actions{display:flex;align-items:center;gap:10px}
+.status-chip,.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:var(--primary-soft);color:var(--primary-dark);font-size:12px;font-weight:700}
+.status-dot{width:8px;height:8px;border-radius:50%;background:#22a06b}
+.content{max-width:1500px;margin:0 auto;padding:28px}
+.page-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:22px}
+.page-intro h1{font-size:25px;margin:0 0 6px}.page-intro p{margin:0;color:var(--muted);font-size:14px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.stack{display:grid;gap:16px}.view.hidden{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.card h3{margin:0 0 14px;font-size:16px}.card h3+ .muted{margin-top:-8px}
+.metric{position:relative;overflow:hidden}.metric:after{content:"";position:absolute;right:-25px;top:-25px;width:90px;height:90px;border-radius:50%;background:var(--primary-soft)}
+.metric strong{font-size:30px;display:block;margin-top:8px;position:relative;z-index:1}.metric .muted{font-weight:600;position:relative;z-index:1}
+.muted{color:var(--muted);font-size:13px;line-height:1.45}
+.row{display:flex;gap:14px;align-items:center;justify-content:space-between}
+.item{border:1px solid var(--line);border-radius:12px;padding:13px;background:var(--surface-soft)}
+.callout,.okbox,.badbox{border-radius:12px;padding:13px 14px;border:1px solid transparent}
+.callout{border-left:4px solid var(--warn);background:var(--warn-soft)}
+.okbox{border-left:4px solid var(--ok);background:var(--ok-soft)}
+.badbox{border-left:4px solid var(--bad);background:var(--bad-soft)}
+label{display:grid;gap:7px;font-size:13px;font-weight:650;color:#344054}
+input,select{width:100%;border:1px solid #d7dde6;border-radius:10px;padding:10px 11px;background:#fff;color:var(--text)}
+input::placeholder{color:#98a2b3}
+input:hover,select:hover{border-color:#b8c1ce}
+.btn{border:1px solid var(--line);background:#fff;color:#344054;padding:10px 13px;border-radius:10px;cursor:pointer;font-weight:650;transition:.15s ease}
+.btn:hover{transform:translateY(-1px);border-color:#b9c2ce;box-shadow:0 4px 12px rgba(16,24,40,.07)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{background:var(--primary-dark)}
+.small{font-size:12px;padding:7px 9px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.scroll{overflow:auto;border-radius:12px}
+table{width:100%;border-collapse:collapse}
+th,td{font-size:13px;text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:#475467;background:#f8fafc;font-size:12px;text-transform:uppercase;letter-spacing:.03em;position:sticky;top:0}
+tbody tr:hover{background:#fafbfc}
+.calendar{display:grid;grid-template-columns:140px repeat(7,minmax(115px,1fr));min-width:1000px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.calcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;min-height:92px;background:#fff}
+.calhead{background:#f3f6fa;font-weight:700;min-height:auto}
+.shift{padding:7px 8px;border-radius:8px;background:var(--primary-soft);border-left:3px solid var(--primary);margin-top:6px;font-size:12px;line-height:1.4}
+.danger{color:var(--bad)}.warning{color:var(--warn)}.success{color:var(--ok)}
+.progress{height:10px;background:#e7ebf1;border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--primary);border-radius:999px}
+.chartrow{display:grid;grid-template-columns:minmax(130px,190px) 1fr 50px;gap:10px;align-items:center}
+.pill{padding:5px 9px;border-radius:999px;font-size:11px;background:#eef2f7;font-weight:700}
+.integr{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dot{width:10px;height:10px;border-radius:50%;background:#9ca3af}.dot.green{background:#16a34a}
+.section-note{padding:11px 13px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.form-actions{display:flex;justify-content:flex-end;margin-top:4px}
+.empty-state{padding:24px;text-align:center;color:var(--muted)}
+@media(max-width:1100px){
+  .app-shell{grid-template-columns:210px minmax(0,1fr)}
+  .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g2{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .app-shell{display:block}.sidebar{position:relative;height:auto;padding:14px;gap:14px}
+  .brand{padding:0}.sidebar-foot{display:none}.tabs{display:flex;overflow-x:auto;padding-bottom:4px}
+  .tabs button{width:auto;white-space:nowrap;padding:9px 11px}.tabs button span:last-child{display:inline}
+  .topbar{position:relative;height:auto;padding:14px 16px}.topbar-actions .status-chip{display:none}
+  .content{padding:18px 14px}.page-intro{flex-direction:column}.g4,.g3,.g2{grid-template-columns:1fr}
+  .row{align-items:flex-start;flex-direction:column}.row>input{max-width:none!important}
+  .card{padding:16px}.chartrow{grid-template-columns:1fr}.calendar{min-width:900px}
+}
 </style>
-</head><!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dienstplan Pro – Erweiterte Demo</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-:root{--bg:#f3f6fb;--card:#fff;--text:#172033;--muted:#667085;--line:#dfe4ec;--accent:#2857d9;--accent2:#eef3ff;--ok:#157347;--warn:#b36b00;--bad:#b42318}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}header{background:#111827;color:#fff;padding:18px 22px}.shell{max-width:1280px;margin:auto}.main{padding:18px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.muted{color:var(--muted);font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--accent2);font-size:12px}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tabs button,.btn{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:10px;cursor:pointer}.tabs button.active,.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}.metric strong{font-size:27px;display:block;margin-top:5px}.view.hidden{display:none}.stack{display:grid;gap:10px}.row{display:flex;gap:12px;align-items:center;justify-content:space-between}.item{border:1px solid var(--line);border-radius:12px;padding:11px}.callout{border-left:4px solid var(--warn);background:#fff7e9;border-radius:10px;padding:11px}.okbox{border-left:4px solid var(--ok);background:#effaf4;border-radius:10px;padding:11px}.badbox{border-left:4px solid var(--bad);background:#fff1f1;border-radius:10px;padding:11px}label{display:grid;gap:5px;font-size:13px}input,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font:inherit}table{width:100%;border-collapse:collapse}th,td{font-size:13px;text-align:left;padding:9px;border-bottom:1px solid var(--line);vertical-align:top}.scroll{overflow:auto}.calendar{display:grid;grid-template-columns:120px repeat(7,minmax(110px,1fr));min-width:920px}.calcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;min-height:88px;background:#fff}.calhead{background:#eef2f7;font-weight:600;min-height:auto}.shift{padding:6px;border-radius:8px;background:var(--accent2);margin-top:5px;font-size:12px}.danger{color:var(--bad)}.warning{color:var(--warn)}.success{color:var(--ok)}.progress{height:10px;background:#e7ebf1;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent)}.chartrow{display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{font-size:12px;padding:6px 9px}.pill{padding:4px 8px;border-radius:999px;font-size:11px;background:#eef2f7}.integr{display:flex;align-items:center;justify-content:space-between;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:#9ca3af}.dot.green{background:#16a34a}
-@media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr 1fr}.top{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}.main{padding:12px}.row{align-items:flex-start;flex-direction:column}}
-</style>
+
 </head>
 <body>
-<header><div class="shell top"><div><strong>Dienstplan Pro</strong><div style="color:#cbd5e1;font-size:13px">Erweiterte klickbare Demo · Krisenmanagement</div></div><span class="badge">Kapazität: bis 300 Personen</span></div></header>
-<main class="shell main">
-<div class="tabs">
-<button class="active" data-view="dashboard">Dashboard</button><button data-view="calendar">Kalender</button><button data-view="people">Personal</button><button data-view="functions">S-Funktionen</button><button data-view="swap">Diensttausch</button><button data-view="training">Ausbildungen</button><button data-view="excel">Excel</button><button data-view="integration">Integrationen</button>
+<div class="app-shell">
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">DP</div>
+    <div><strong>Dienstplan Pro</strong><small>Krisenmanagement</small></div>
+  </div>
+  <nav class="tabs" aria-label="Hauptnavigation">
+    <button class="active" data-view="dashboard"><span class="nav-icon">⌂</span><span>Dashboard</span></button>
+    <button data-view="calendar"><span class="nav-icon">▦</span><span>Kalender</span></button>
+    <button data-view="people"><span class="nav-icon">👥</span><span>Personal</span></button>
+    <button data-view="functions"><span class="nav-icon">S</span><span>S-Funktionen</span></button>
+    <button data-view="swap"><span class="nav-icon">⇄</span><span>Diensttausch</span></button>
+    <button data-view="training"><span class="nav-icon">✓</span><span>Ausbildungen</span></button>
+    <button data-view="excel"><span class="nav-icon">⇩</span><span>Daten & Excel</span></button>
+    <button data-view="integration"><span class="nav-icon">⚙</span><span>Integrationen</span></button>
+  </nav>
+  <div class="sidebar-foot">
+    <strong>Demo-Version</strong><br>
+    Die Daten werden nur während der geöffneten Sitzung gespeichert.
+  </div>
+</aside>
+<div class="workspace">
+<header class="topbar">
+  <div class="topbar-title"><strong id="currentPageTitle">Dashboard</strong><span>Planung und Krisenorganisation im Überblick</span></div>
+  <div class="topbar-actions">
+    <span class="status-chip"><span class="status-dot"></span> System bereit</span>
+    <span class="badge">bis 300 Personen</span>
+  </div>
+</header>
+<main class="content">
+<div class="page-intro">
+  <div><h1 id="pageHeading">Dashboard</h1><p id="pageDescription">Die wichtigsten Kennzahlen, Warnungen und Qualifikationen auf einen Blick.</p></div>
 </div>
 
 <section id="dashboard" class="view stack">
@@ -39,7 +144,7 @@
 </section>
 
 <section id="people" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Personal ergänzen</h3><label>Vorname<input id="pFirst"></label><label>Nachname<input id="pLast"></label><label>E-Mail<input id="pMail" type="email"></label><label>S-Funktion<select id="pFunction"></select></label><label>Standort<input id="pLocation" value="Klagenfurt"></label><button class="btn primary" id="addPerson">Person hinzufügen</button><div id="peopleMsg" class="muted"></div></div>
+<div class="grid g2"><div class="card stack"><h3>Neue Person anlegen</h3><div class="muted">Pflichtfelder: Vorname und Nachname.</div><label>Vorname<input id="pFirst"></label><label>Nachname<input id="pLast"></label><label>E-Mail<input id="pMail" type="email"></label><label>S-Funktion<select id="pFunction"></select></label><label>Standort<input id="pLocation" value="Klagenfurt"></label><button class="btn primary" id="addPerson">Person hinzufügen</button><div id="peopleMsg" class="muted"></div></div>
 <div class="card"><div class="row"><div><h3>Personalübersicht</h3><div class="muted"><span id="peopleCount"></span> von 300 möglichen Personen</div></div><input id="peopleSearch" placeholder="Suchen…" style="max-width:220px"></div><div class="scroll"><table><thead><tr><th>Name</th><th>Funktion</th><th>Standort</th><th>Schulung</th><th>Aktion</th></tr></thead><tbody id="peopleBody"></tbody></table></div></div></div>
 </section>
 
@@ -47,7 +152,7 @@
 <section id="functions" class="view hidden stack">
 <div class="grid g2">
   <div class="card stack">
-    <h3>S-Funktion ergänzen</h3>
+    <h3>Neue S-Funktion anlegen</h3><div class="muted">Nur das Kürzel ist verpflichtend.</div>
     <label>Kürzel<input id="fCode" placeholder="z. B. S7"></label>
     <label>Bezeichnung <span class="muted">(optional)</span><input id="fName" placeholder="wird bei leerem Feld automatisch erstellt"></label>
     <label>Beschreibung <span class="muted">(optional)</span><input id="fDescription" placeholder="kann später ergänzt werden"></label>
@@ -62,7 +167,7 @@
 </section>
 
 <section id="swap" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Diensttausch prüfen</h3><label>Abzugebender Dienst<select id="swapFrom"></select></label><label>Tauschpartner<select id="swapTo"></select></label><button class="btn primary" id="checkSwap">Tausch automatisch prüfen</button></div><div class="card"><h3>Prüfergebnis</h3><div id="swapResult" class="muted">Noch kein Tausch geprüft.</div></div></div>
+<div class="grid g2"><div class="card stack"><h3>Diensttausch vorbereiten</h3><div class="muted">Das System prüft Qualifikation, Arbeitszeit, Rufbereitschaft und Mindestbesetzung.</div><label>Abzugebender Dienst<select id="swapFrom"></select></label><label>Tauschpartner<select id="swapTo"></select></label><button class="btn primary" id="checkSwap">Tausch automatisch prüfen</button></div><div class="card"><h3>Prüfergebnis</h3><div id="swapResult" class="muted">Noch kein Tausch geprüft.</div></div></div>
 </section>
 
 <section id="training" class="view hidden stack">
@@ -72,7 +177,7 @@
 </section>
 
 <section id="excel" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Excel exportieren</h3><div class="muted">Exportiert Personal, Dienste und Schulungen in eine Excel-Datei.</div><button class="btn primary" id="exportExcel">Excel-Datei erstellen</button><button class="btn" id="exportCsv">CSV-Fallback exportieren</button></div><div class="card stack"><h3>Excel importieren</h3><div class="muted">Unterstützt die Blätter Personal, Dienste und Schulungen aus der beiliegenden Vorlage.</div><input type="file" id="importFile" accept=".xlsx,.xls,.csv"><button class="btn" id="importExcel">Datei einlesen</button><div id="importMsg" class="muted"></div></div></div>
+<div class="grid g2"><div class="card stack"><h3>Daten exportieren</h3><div class="muted">Exportiert Personal, Dienste und Schulungen in eine Excel-Datei.</div><button class="btn primary" id="exportExcel">Excel-Datei erstellen</button><button class="btn" id="exportCsv">CSV-Fallback exportieren</button></div><div class="card stack"><h3>Daten importieren</h3><div class="muted">Unterstützt die Blätter Personal, Dienste und Schulungen aus der beiliegenden Vorlage.</div><input type="file" id="importFile" accept=".xlsx,.xls,.csv"><button class="btn" id="importExcel">Datei einlesen</button><div id="importMsg" class="muted"></div></div></div>
 <div class="card"><strong>Importvorlage:</strong> Die Datei <code>Dienstplan_Pro_Importvorlage.xlsx</code> liegt im selben Ordner wie diese Demo.</div>
 </section>
 
@@ -80,6 +185,8 @@
 <div class="grid g2"><div class="card stack"><h3>Einbindung</h3><div class="item integr"><div><strong>SharePoint</strong><div class="muted">Webpart, Microsoft Graph, SSO</div></div><span class="dot"></span></div><div class="item integr"><div><strong>iShare</strong><div class="muted">Einbettung bzw. API-Anbindung nach Systemfreigabe</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP SuccessFactors</strong><div class="muted">Personal- und Schulungsdaten synchronisieren</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP</strong><div class="muted">Mitarbeiterstamm und Qualifikationen</div></div><span class="dot"></span></div></div><div class="card stack"><h3>Demo-Verbindungsstatus</h3><div class="callout">Die Demo simuliert die Integrationen. Für den echten Betrieb sind API-Zugänge, Berechtigungen, SSO, Datenmapping und Datenschutzfreigaben erforderlich.</div><button class="btn" id="simulateConnect">Verbindungen simulieren</button><div id="integrationMsg" class="muted"></div></div></div>
 </section>
 </main>
+</div>
+</div>
 <script>
 let functions=[
 {id:'S1',name:'Personal',description:'Personalübersicht, Alarmierung und Reserven',active:true},
@@ -126,7 +233,25 @@ function personOnCall(pid){return shifts.filter(s=>s.pid===pid).reduce((a,s)=>a+
 function qualified(pid,fun){const p=person(pid),t=trainings.find(x=>x.pid===pid&&x.name.startsWith(fun));return p&&p.fun===fun&&t&&t.status==='Abgeschlossen'}
 function warnings(){let n=0;[31,32].forEach(k=>{if(weekCount(k)<6)n++});people.forEach(p=>{if(personHours(p.id,31)>60)n++;if(personOnCall(p.id)>10)n++});trainings.forEach(t=>{if(t.status==='Abgelaufen'||t.status==='In Bearbeitung'||t.status==='Geplant')n++});return n}
 
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));b.classList.add('active');document.getElementById(b.dataset.view).classList.remove('hidden')});
+const pageMeta={
+ dashboard:['Dashboard','Die wichtigsten Kennzahlen, Warnungen und Qualifikationen auf einen Blick.'],
+ calendar:['Kalender','Dienste und Rufbereitschaften übersichtlich nach Kalenderwoche planen.'],
+ people:['Personal','Mitarbeitende erfassen, suchen und S-Funktionen zuordnen.'],
+ functions:['S-Funktionen','Funktionen des Krisenstabs flexibel verwalten.'],
+ swap:['Diensttausch','Tauschvorgänge automatisch auf Regeln und Qualifikationen prüfen.'],
+ training:['Ausbildungen','Qualifikationen, Fristen und Schulungsstände überwachen.'],
+ excel:['Daten & Excel','Personal-, Dienst- und Schulungsdaten importieren oder exportieren.'],
+ integration:['Integrationen','Anbindungen an SharePoint, iShare und SAP vorbereiten.']
+};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+ document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));
+ b.classList.add('active');
+ document.getElementById(b.dataset.view).classList.remove('hidden');
+ const meta=pageMeta[b.dataset.view];
+ currentPageTitle.textContent=meta[0];pageHeading.textContent=meta[0];pageDescription.textContent=meta[1];
+ window.scrollTo({top:0,behavior:'smooth'});
+});
 function renderDashboard(){mPeople.textContent=people.length;mWeek.textContent=weekCount(31);mWarnings.textContent=warnings();weekStatus.innerHTML=[31,32].map(k=>{const c=weekCount(k),ok=c>=6;return `<div class="${ok?'okbox':'badbox'}"><strong>KW ${k}: ${c} Personen/Dienste</strong><div class="muted">${ok?'Mindestbesetzung erfüllt':'Mindestens 6 erforderlich – es fehlen '+(6-c)}</div></div>`}).join('');dashboardTraining.innerHTML=trainings.filter(t=>t.status!=='Abgeschlossen').map(t=>`<div class="item"><strong>${pName(t.pid)}</strong><div class="muted">${t.name}: ${t.status}</div></div>`).join('')||'<div class="okbox">Keine offenen Schulungshinweise.</div>'}
 function renderCalendar(){const kw=Number(calendarKw.value),start=kw===31?new Date('2026-07-27'):new Date('2026-08-03');let html='<div class="calcell calhead">Person</div>'+days.map((d,i)=>`<div class="calcell calhead">${d}<div class="muted">${new Date(start.getTime()+i*86400000).toLocaleDateString('de-AT')}</div></div>`).join('');people.filter(p=>shifts.some(s=>s.pid===p.id&&s.kw===kw)).forEach(p=>{html+=`<div class="calcell"><strong>${p.first} ${p.last}</strong><div class="muted">${p.fun}</div></div>`;for(let i=0;i<7;i++){const date=new Date(start.getTime()+i*86400000).toISOString().slice(0,10),ss=shifts.filter(s=>s.pid===p.id&&s.date===date);html+=`<div class="calcell">${ss.map(s=>`<div class="shift"><strong>${s.fun}</strong><br>${s.type}<br>${s.hours} h</div>`).join('')}</div>`}});calendarGrid.innerHTML=html}
 function renderPeople(){const q=peopleSearch.value.toLowerCase();const list=people.filter(p=>(p.first+' '+p.last+' '+p.fun+' '+p.location).toLowerCase().includes(q));peopleCount.textContent=people.length;peopleBody.innerHTML=list.map(p=>`<tr><td><strong>${p.first} ${p.last}</strong><div class="muted">${p.mail}</div></td><td>${p.fun} – ${functionName(p.fun)}</td><td>${p.location}</td><td>${p.training}</td><td><button class="btn small remove" data-id="${p.id}">Entfernen</button></td></tr>`).join('');document.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{if(shifts.some(s=>s.pid===b.dataset.id)){peopleMsg.textContent='Person hat noch Dienste und kann erst nach Entfernung der Dienste gelöscht werden.';return}people=people.filter(p=>p.id!==b.dataset.id);renderAll()})}
@@ -184,360 +309,6 @@ addFunction.onclick=()=>{
  const name=enteredName||('Benutzerdefinierte Funktion '+code);
  const description=fDescription.value.trim()||'Keine Beschreibung hinterlegt';
  if(!code){functionMsg.textContent='Nur das Kürzel ist erforderlich.';return}
- if(functions.some(f=>f.id===code)){functionMsg.textContent='Dieses Kürzel existiert bereits.';return}
- functions.push({id:code,name,description,active:true});
- functionMsg.textContent=code+' wurde ergänzt und ist sofort auswählbar.';
- fCode.value=fName.value=fDescription.value='';
- renderAll()
-};
-checkSwap.onclick=checkSwapLogic;autoFill.onclick=()=>alert(weekCount(Number(calendarKw.value))>=6?'Mindestbesetzung ist erfüllt.':'Mindestbesetzung nicht erfüllt. Es fehlen '+(6-weekCount(Number(calendarKw.value)))+' Personen.');exportExcel.onclick=exportWorkbook;exportCsv.onclick=exportCsv;importExcel.onclick=importWorkbook;simulateConnect.onclick=()=>{document.querySelectorAll('.dot').forEach(d=>d.classList.add('green'));integrationMsg.textContent='Demo-Verbindungen wurden simuliert. Keine echten Daten wurden übertragen.'};renderAll();
-</script>
-</body></html>
-
-<body>
-<header><div class="shell top"><div><strong>Die<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dienstplan Pro – Erweiterte Demo</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-:root{--bg:#f3f6fb;--card:#fff;--text:#172033;--muted:#667085;--line:#dfe4ec;--accent:#2857d9;--accent2:#eef3ff;--ok:#157347;--warn:#b36b00;--bad:#b42318}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}header{background:#111827;color:#fff;padding:18px 22px}.shell{max-width:1280px;margin:auto}.main{padding:18px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.muted{color:var(--muted);font-size:13px}.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--accent2);font-size:12px}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.tabs button,.btn{border:1px solid var(--line);background:#fff;padding:9px 12px;border-radius:10px;cursor:pointer}.tabs button.active,.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}.grid{display:grid;gap:14px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px}.metric strong{font-size:27px;display:block;margin-top:5px}.view.hidden{display:none}.stack{display:grid;gap:10px}.row{display:flex;gap:12px;align-items:center;justify-content:space-between}.item{border:1px solid var(--line);border-radius:12px;padding:11px}.callout{border-left:4px solid var(--warn);background:#fff7e9;border-radius:10px;padding:11px}.okbox{border-left:4px solid var(--ok);background:#effaf4;border-radius:10px;padding:11px}.badbox{border-left:4px solid var(--bad);background:#fff1f1;border-radius:10px;padding:11px}label{display:grid;gap:5px;font-size:13px}input,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font:inherit}table{width:100%;border-collapse:collapse}th,td{font-size:13px;text-align:left;padding:9px;border-bottom:1px solid var(--line);vertical-align:top}.scroll{overflow:auto}.calendar{display:grid;grid-template-columns:120px repeat(7,minmax(110px,1fr));min-width:920px}.calcell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:8px;min-height:88px;background:#fff}.calhead{background:#eef2f7;font-weight:600;min-height:auto}.shift{padding:6px;border-radius:8px;background:var(--accent2);margin-top:5px;font-size:12px}.danger{color:var(--bad)}.warning{color:var(--warn)}.success{color:var(--ok)}.progress{height:10px;background:#e7ebf1;border-radius:999px;overflow:hidden}.progress span{display:block;height:100%;background:var(--accent)}.chartrow{display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center}.actions{display:flex;gap:7px;flex-wrap:wrap}.small{font-size:12px;padding:6px 9px}.pill{padding:4px 8px;border-radius:999px;font-size:11px;background:#eef2f7}.integr{display:flex;align-items:center;justify-content:space-between;gap:10px}.dot{width:10px;height:10px;border-radius:50%;background:#9ca3af}.dot.green{background:#16a34a}
-@media(max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr 1fr}.top{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}.main{padding:12px}.row{align-items:flex-start;flex-direction:column}}
-</style>
-</head>
-<body>
-<header><div class="shell top"><div><strong>Dienstplan Pro</strong><div style="color:#cbd5e1;font-size:13px">Erweiterte klickbare Demo · Krisenmanagement</div></div><span class="badge">Kapazität: bis 300 Personen</span></div></header>
-<main class="shell main">
-<div class="tabs">
-<button class="active" data-view="dashboard">Dashboard</button><button data-view="calendar">Kalender</button><button data-view="people">Personal</button><button data-view="functions">S-Funktionen</button><button data-view="swap">Diensttausch</button><button data-view="training">Ausbildungen</button><button data-view="excel">Excel</button><button data-view="integration">Integrationen</button>
-</div>
-
-<section id="dashboard" class="view stack">
-<div class="grid g4"><div class="card metric"><span class="muted">Personal aktiv</span><strong id="mPeople">0</strong></div><div class="card metric"><span class="muted">Dienste KW 31</span><strong id="mWeek">0</strong></div><div class="card metric"><span class="muted">Mindestbesetzung</span><strong>6</strong></div><div class="card metric"><span class="muted">Offene Warnungen</span><strong id="mWarnings">0</strong></div></div>
-<div class="grid g2"><div class="card"><h3>Besetzung nach Kalenderwoche</h3><div id="weekStatus" class="stack"></div></div><div class="card"><h3>Qualifikationshinweise</h3><div id="dashboardTraining" class="stack"></div></div></div>
-</section>
-
-<section id="calendar" class="view hidden stack">
-<div class="card"><div class="row"><div><h3>Kalenderübersicht</h3><div class="muted">KW 31 · 27. Juli bis 2. August 2026</div></div><div class="actions"><select id="calendarKw" style="width:auto"><option value="31">KW 31</option><option value="32">KW 32</option></select><button class="btn small" id="autoFill">Mindestbesetzung prüfen</button></div></div></div>
-<div class="card scroll"><div id="calendarGrid" class="calendar"></div></div>
-</section>
-
-<section id="people" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Personal ergänzen</h3><label>Vorname<input id="pFirst"></label><label>Nachname<input id="pLast"></label><label>E-Mail<input id="pMail" type="email"></label><label>S-Funktion<select id="pFunction"></select></label><label>Standort<input id="pLocation" value="Klagenfurt"></label><button class="btn primary" id="addPerson">Person hinzufügen</button><div id="peopleMsg" class="muted"></div></div>
-<div class="card"><div class="row"><div><h3>Personalübersicht</h3><div class="muted"><span id="peopleCount"></span> von 300 möglichen Personen</div></div><input id="peopleSearch" placeholder="Suchen…" style="max-width:220px"></div><div class="scroll"><table><thead><tr><th>Name</th><th>Funktion</th><th>Standort</th><th>Schulung</th><th>Aktion</th></tr></thead><tbody id="peopleBody"></tbody></table></div></div></div>
-</section>
-
-
-<section id="functions" class="view hidden stack">
-<div class="grid g2">
-  <div class="card stack">
-    <h3>S-Funktion ergänzen</h3>
-    <label>Kürzel<input id="fCode" placeholder="z. B. S7"></label>
-    <label>Bezeichnung <span class="muted">(optional)</span><input id="fName" placeholder="wird bei leerem Feld automatisch erstellt"></label>
-    <label>Beschreibung <span class="muted">(optional)</span><input id="fDescription" placeholder="kann später ergänzt werden"></label>
-    <button class="btn primary" id="addFunction">Funktion hinzufügen</button>
-    <div id="functionMsg" class="muted"></div>
-  </div>
-  <div class="card">
-    <div class="row"><div><h3>Verfügbare S-Funktionen</h3><div class="muted">Neue Funktionen werden sofort in Personal, Schulungen, Tausch und Export übernommen.</div></div></div>
-    <div id="functionList" class="stack"></div>
-  </div>
-</div>
-</section>
-
-<section id="swap" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Diensttausch prüfen</h3><label>Abzugebender Dienst<select id="swapFrom"></select></label><label>Tauschpartner<select id="swapTo"></select></label><button class="btn primary" id="checkSwap">Tausch automatisch prüfen</button></div><div class="card"><h3>Prüfergebnis</h3><div id="swapResult" class="muted">Noch kein Tausch geprüft.</div></div></div>
-</section>
-
-<section id="training" class="view hidden stack">
-<div class="grid g4"><div class="card metric"><span class="muted">Qualifiziert</span><strong id="tQualified">0</strong></div><div class="card metric"><span class="muted">Bald fällig</span><strong id="tDue">0</strong></div><div class="card metric"><span class="muted">Abgelaufen</span><strong id="tExpired">0</strong></div><div class="card metric"><span class="muted">In Bearbeitung</span><strong id="tProgress">0</strong></div></div>
-<div class="grid g2"><div class="card"><h3>Ausbildungsstatistik nach S-Funktion</h3><div id="trainingChart" class="stack"></div></div><div class="card"><h3>Erinnerungen</h3><div id="trainingReminders" class="stack"></div></div></div>
-<div class="card scroll"><table><thead><tr><th>Person</th><th>Schulung</th><th>Status</th><th>Gültig bis</th><th>Quelle</th></tr></thead><tbody id="trainingBody"></tbody></table></div>
-</section>
-
-<section id="excel" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Excel exportieren</h3><div class="muted">Exportiert Personal, Dienste und Schulungen in eine Excel-Datei.</div><button class="btn primary" id="exportExcel">Excel-Datei erstellen</button><button class="btn" id="exportCsv">CSV-Fallback exportieren</button></div><div class="card stack"><h3>Excel importieren</h3><div class="muted">Unterstützt die Blätter Personal, Dienste und Schulungen aus der beiliegenden Vorlage.</div><input type="file" id="importFile" accept=".xlsx,.xls,.csv"><button class="btn" id="importExcel">Datei einlesen</button><div id="importMsg" class="muted"></div></div></div>
-<div class="card"><strong>Importvorlage:</strong> Die Datei <code>Dienstplan_Pro_Importvorlage.xlsx</code> liegt im selben Ordner wie diese Demo.</div>
-</section>
-
-<section id="integration" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Einbindung</h3><div class="item integr"><div><strong>SharePoint</strong><div class="muted">Webpart, Microsoft Graph, SSO</div></div><span class="dot"></span></div><div class="item integr"><div><strong>iShare</strong><div class="muted">Einbettung bzw. API-Anbindung nach Systemfreigabe</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP SuccessFactors</strong><div class="muted">Personal- und Schulungsdaten synchronisieren</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP</strong><div class="muted">Mitarbeiterstamm und Qualifikationen</div></div><span class="dot"></span></div></div><div class="card stack"><h3>Demo-Verbindungsstatus</h3><div class="callout">Die Demo simuliert die Integrationen. Für den echten Betrieb sind API-Zugänge, Berechtigungen, SSO, Datenmapping und Datenschutzfreigaben erforderlich.</div><button class="btn" id="simulateConnect">Verbindungen simulieren</button><div id="integrationMsg" class="muted"></div></div></div>
-</section>
-</main>
-<script>
-let functions=[
-{id:'S1',name:'Personal',description:'Personalübersicht, Alarmierung und Reserven',active:true},
-{id:'S2',name:'Lage',description:'Lagebild, Dokumentation und Berichte',active:true},
-{id:'S3',name:'Einsatz',description:'Maßnahmen und Einsatzkoordination',active:true},
-{id:'S4',name:'Versorgung',description:'Logistik, Material und Infrastruktur',active:true},
-{id:'S5',name:'Presse/Medien',description:'Externe Krisenkommunikation',active:true},
-{id:'S6',name:'Information/Kommunikation',description:'IKT und technische Verbindungen',active:true}
-];
-function fnMap(){return Object.fromEntries(functions.map(f=>[f.id,f.name]))}
-function functionName(id){return fnMap()[id]||'Unbekannte Funktion'}
-let people=[
-{id:'P001',first:'Anna',last:'Müller',mail:'anna@demo.at',fun:'S1',location:'Klagenfurt',training:'Abgeschlossen'},
-{id:'P002',first:'Markus',last:'Huber',mail:'markus@demo.at',fun:'S2',location:'Villach',training:'Bald fällig'},
-{id:'P003',first:'Sarah',last:'Novak',mail:'sarah@demo.at',fun:'S3',location:'Klagenfurt',training:'In Bearbeitung'},
-{id:'P004',first:'Peter',last:'Gruber',mail:'peter@demo.at',fun:'S4',location:'Villach',training:'Abgeschlossen'},
-{id:'P005',first:'Lisa',last:'Steiner',mail:'lisa@demo.at',fun:'S5',location:'Klagenfurt',training:'Abgeschlossen'},
-{id:'P006',first:'Daniel',last:'Maier',mail:'daniel@demo.at',fun:'S6',location:'Villach',training:'Abgeschlossen'},
-{id:'P007',first:'Eva',last:'Leitner',mail:'eva@demo.at',fun:'S1',location:'Klagenfurt',training:'Geplant'},
-{id:'P008',first:'Thomas',last:'Winkler',mail:'thomas@demo.at',fun:'S2',location:'Villach',training:'Abgeschlossen'}];
-let shifts=[
-{id:'D001',kw:31,date:'2026-07-27',pid:'P001',type:'Rufbereitschaft',fun:'S1',hours:8,oncall:1},
-{id:'D002',kw:31,date:'2026-07-27',pid:'P002',type:'Rufbereitschaft',fun:'S2',hours:8,oncall:1},
-{id:'D003',kw:31,date:'2026-07-27',pid:'P003',type:'Rufbereitschaft',fun:'S3',hours:8,oncall:1},
-{id:'D004',kw:31,date:'2026-07-27',pid:'P004',type:'Rufbereitschaft',fun:'S4',hours:8,oncall:1},
-{id:'D005',kw:31,date:'2026-07-27',pid:'P005',type:'Rufbereitschaft',fun:'S5',hours:8,oncall:1},
-{id:'D006',kw:31,date:'2026-07-27',pid:'P006',type:'Rufbereitschaft',fun:'S6',hours:8,oncall:1},
-{id:'D007',kw:32,date:'2026-08-03',pid:'P007',type:'Rufbereitschaft',fun:'S1',hours:40,oncall:7}];
-let trainings=[
-{pid:'P001',name:'S1 Personal',status:'Abgeschlossen',valid:'2027-03-05',source:'SAP SuccessFactors'},
-{pid:'P002',name:'S2 Lage',status:'Abgelaufen',valid:'2026-06-01',source:'SAP SuccessFactors'},
-{pid:'P003',name:'S3 Einsatz',status:'In Bearbeitung',valid:'',source:'SAP SuccessFactors'},
-{pid:'P004',name:'S4 Versorgung',status:'Abgeschlossen',valid:'2027-02-20',source:'SAP SuccessFactors'},
-{pid:'P005',name:'S5 Presse/Medien',status:'Abgeschlossen',valid:'2027-07-01',source:'SAP SuccessFactors'},
-{pid:'P006',name:'S6 IKT',status:'Abgeschlossen',valid:'2027-09-01',source:'SAP SuccessFactors'},
-{pid:'P007',name:'S1 Personal',status:'Geplant',valid:'',source:'SAP SuccessFactors'},
-{pid:'P008',name:'S2 Lage',status:'Abgeschlossen',valid:'2027-05-15',source:'SAP SuccessFactors'}];
-const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
-function person(id){return people.find(p=>p.id===id)}
-function pName(id){const p=person(id);return p?p.first+' '+p.last:'Unbekannt'}
-function weekCount(kw){return new Set(shifts.filter(s=>s.kw==kw).map(s=>s.pid)).size}
-function personHours(pid,kw){return shifts.filter(s=>s.pid===pid&&s.kw===kw).reduce((a,s)=>a+s.hours,0)}
-function personOnCall(pid){return shifts.filter(s=>s.pid===pid).reduce((a,s)=>a+s.oncall,0)}
-function qualified(pid,fun){const p=person(pid),t=trainings.find(x=>x.pid===pid&&x.name.startsWith(fun));return p&&p.fun===fun&&t&&t.status==='Abgeschlossen'}
-function warnings(){let n=0;[31,32].forEach(k=>{if(weekCount(k)<6)n++});people.forEach(p=>{if(personHours(p.id,31)>60)n++;if(personOnCall(p.id)>10)n++});trainings.forEach(t=>{if(t.status==='Abgelaufen'||t.status==='In Bearbeitung'||t.status==='Geplant')n++});return n}
-
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));b.classList.add('active');document.getElementById(b.dataset.view).classList.remove('hidden')});
-function renderDashboard(){mPeople.textContent=people.length;mWeek.textContent=weekCount(31);mWarnings.textContent=warnings();weekStatus.innerHTML=[31,32].map(k=>{const c=weekCount(k),ok=c>=6;return `<div class="${ok?'okbox':'badbox'}"><strong>KW ${k}: ${c} Personen/Dienste</strong><div class="muted">${ok?'Mindestbesetzung erfüllt':'Mindestens 6 erforderlich – es fehlen '+(6-c)}</div></div>`}).join('');dashboardTraining.innerHTML=trainings.filter(t=>t.status!=='Abgeschlossen').map(t=>`<div class="item"><strong>${pName(t.pid)}</strong><div class="muted">${t.name}: ${t.status}</div></div>`).join('')||'<div class="okbox">Keine offenen Schulungshinweise.</div>'}
-function renderCalendar(){const kw=Number(calendarKw.value),start=kw===31?new Date('2026-07-27'):new Date('2026-08-03');let html='<div class="calcell calhead">Person</div>'+days.map((d,i)=>`<div class="calcell calhead">${d}<div class="muted">${new Date(start.getTime()+i*86400000).toLocaleDateString('de-AT')}</div></div>`).join('');people.filter(p=>shifts.some(s=>s.pid===p.id&&s.kw===kw)).forEach(p=>{html+=`<div class="calcell"><strong>${p.first} ${p.last}</strong><div class="muted">${p.fun}</div></div>`;for(let i=0;i<7;i++){const date=new Date(start.getTime()+i*86400000).toISOString().slice(0,10),ss=shifts.filter(s=>s.pid===p.id&&s.date===date);html+=`<div class="calcell">${ss.map(s=>`<div class="shift"><strong>${s.fun}</strong><br>${s.type}<br>${s.hours} h</div>`).join('')}</div>`}});calendarGrid.innerHTML=html}
-function renderPeople(){const q=peopleSearch.value.toLowerCase();const list=people.filter(p=>(p.first+' '+p.last+' '+p.fun+' '+p.location).toLowerCase().includes(q));peopleCount.textContent=people.length;peopleBody.innerHTML=list.map(p=>`<tr><td><strong>${p.first} ${p.last}</strong><div class="muted">${p.mail}</div></td><td>${p.fun} – ${functionName(p.fun)}</td><td>${p.location}</td><td>${p.training}</td><td><button class="btn small remove" data-id="${p.id}">Entfernen</button></td></tr>`).join('');document.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{if(shifts.some(s=>s.pid===b.dataset.id)){peopleMsg.textContent='Person hat noch Dienste und kann erst nach Entfernung der Dienste gelöscht werden.';return}people=people.filter(p=>p.id!==b.dataset.id);renderAll()})}
-function renderSwap(){swapFrom.innerHTML=shifts.map(s=>`<option value="${s.id}">${s.id} · ${pName(s.pid)} · ${s.fun} · KW ${s.kw}</option>`).join('');swapTo.innerHTML=people.map(p=>`<option value="${p.id}">${p.first} ${p.last} · ${p.fun} · ${p.training}</option>`).join('')}
-function checkSwapLogic(){const s=shifts.find(x=>x.id===swapFrom.value),target=person(swapTo.value);const reasons=[];if(target.id===s.pid)reasons.push('Die gleiche Person ist bereits eingeteilt.');if(target.fun!==s.fun)reasons.push(`${s.fun} darf nur mit ${s.fun} tauschen.`);if(!qualified(target.id,s.fun))reasons.push('Die erforderliche Funktionsausbildung ist nicht gültig abgeschlossen.');if(personHours(target.id,s.kw)+s.hours>60)reasons.push('Die konfigurierte Wochenarbeitszeit von 60 Stunden würde überschritten.');if(personOnCall(target.id)+s.oncall>10)reasons.push('Die konfigurierte Grenze der Rufbereitschaftstage würde überschritten.');const after=new Set(shifts.filter(x=>x.kw===s.kw&&x.id!==s.id).map(x=>x.pid));after.add(target.id);if(after.size<6)reasons.push('Die Mindestbesetzung von 6 Personen in der KW wäre nicht erfüllt.');swapResult.className=reasons.length?'badbox':'okbox';swapResult.innerHTML=reasons.length?`<strong>Tausch nicht möglich</strong><ul>${reasons.map(r=>`<li>${r}</li>`).join('')}</ul>`:`<strong>Tausch möglich</strong><div class="muted">Funktion, Schulung, Stunden, Rufbereitschaft und Mindestbesetzung wurden erfolgreich geprüft.</div><button class="btn primary small" id="applySwap">Tausch durchführen</button>`;if(!reasons.length)document.getElementById('applySwap').onclick=()=>{s.pid=target.id;swapResult.innerHTML='<strong>Tausch durchgeführt.</strong>';renderAll()}}
-function renderTraining(){const counts={q:0,d:0,e:0,p:0};trainings.forEach(t=>{if(t.status==='Abgeschlossen')counts.q++;if(t.status==='Bald fällig')counts.d++;if(t.status==='Abgelaufen')counts.e++;if(t.status==='In Bearbeitung'||t.status==='Geplant')counts.p++});tQualified.textContent=counts.q;tDue.textContent=counts.d;tExpired.textContent=counts.e;tProgress.textContent=counts.p;trainingChart.innerHTML=functions.filter(x=>x.active).map(x=>x.id).map(f=>{const total=people.filter(p=>p.fun===f).length,qual=people.filter(p=>p.fun===f&&qualified(p.id,f)).length,pct=total?Math.round(qual/total*100):0;return `<div class="chartrow"><span>${f} – ${functionName(f)}</span><div class="progress"><span style="width:${pct}%"></span></div><strong>${pct}%</strong></div>`}).join('');trainingReminders.innerHTML=trainings.filter(t=>t.status!=='Abgeschlossen').map(t=>`<div class="item"><strong>${pName(t.pid)}</strong><div class="muted">${t.name} · ${t.status}</div></div>`).join('');trainingBody.innerHTML=trainings.map(t=>`<tr><td>${pName(t.pid)}</td><td>${t.name}</td><td>${t.status}</td><td>${t.valid||'—'}</td><td>${t.source}</td></tr>`).join('')}
-function exportWorkbook(){if(typeof XLSX==='undefined'){alert('Excel-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen oder CSV verwenden.');return}const wb=XLSX.utils.book_new();const p=people.map(x=>({'Personal-ID':x.id,Vorname:x.first,Nachname:x.last,'E-Mail':x.mail,'S-Funktion':x.fun,Standort:x.location,Schulungsstatus:x.training}));const d=shifts.map(x=>({'Dienst-ID':x.id,KW:x.kw,Datum:x.date,'Personal-ID':x.pid,Name:pName(x.pid),Diensttyp:x.type,'S-Funktion':x.fun,'Dauer Stunden':x.hours,Rufbereitschaftstage:x.oncall}));const t=trainings.map(x=>({'Personal-ID':x.pid,Name:pName(x.pid),Schulung:x.name,Status:x.status,'Gültig bis':x.valid,Quelle:x.source}));XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(p),'Personal');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),'Dienste');const f=functions.map(x=>({'Kürzel':x.id,'Bezeichnung':x.name,'Beschreibung':x.description,'Aktiv':x.active?'Ja':'Nein'}));XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(t),'Schulungen');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(f),'S-Funktionen');XLSX.writeFile(wb,'Dienstplan_Pro_Export.xlsx')}
-function exportCsv(){const rows=[['Personal-ID','Vorname','Nachname','E-Mail','S-Funktion','Standort'],...people.map(p=>[p.id,p.first,p.last,p.mail,p.fun,p.location])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Dienstplan_Personal.csv';a.click()}
-async function importWorkbook(){const file=importFile.files[0];if(!file){importMsg.textContent='Bitte zuerst eine Datei auswählen.';return}if(typeof XLSX==='undefined'){importMsg.textContent='Excel-Bibliothek konnte nicht geladen werden.';return}const data=await file.arrayBuffer(),wb=XLSX.read(data,{type:'array'});if(wb.Sheets.Personal){const rows=XLSX.utils.sheet_to_json(wb.Sheets.Personal,{defval:''});people=rows.map((r,i)=>({id:r['Personal-ID']||'P'+String(i+1).padStart(3,'0'),first:r.Vorname||'',last:r.Nachname||'',mail:r['E-Mail']||'',fun:r['S-Funktion']||'S1',location:r.Standort||'',training:r.Schulungsstatus||'Unbekannt'})).filter(p=>p.first||p.last)}if(wb.Sheets.Dienste){const rows=XLSX.utils.sheet_to_json(wb.Sheets.Dienste,{defval:''});shifts=rows.map((r,i)=>({id:r['Dienst-ID']||'D'+String(i+1).padStart(3,'0'),kw:Number(r.KW||31),date:typeof r.Datum==='number'?new Date((r.Datum-25569)*86400*1000).toISOString().slice(0,10):String(r.Datum).slice(0,10),pid:r['Personal-ID'],type:r.Diensttyp||'Rufbereitschaft',fun:r['S-Funktion']||'S1',hours:Number(r['Dauer Stunden']||0),oncall:Number(r.Rufbereitschaftstage||0)}))}
-if(wb.Sheets['S-Funktionen']){
- const rows=XLSX.utils.sheet_to_json(wb.Sheets['S-Funktionen'],{defval:''});
- const imported=rows.map(r=>({id:String(r['Kürzel']||'').trim().toUpperCase(),name:String(r['Bezeichnung']||'').trim(),description:String(r['Beschreibung']||'').trim(),active:String(r['Aktiv']||'Ja').toLowerCase()!=='nein'})).filter(f=>f.id&&f.name);
- if(imported.length)functions=imported;
-}
-importMsg.textContent='Import abgeschlossen: '+people.length+' Personen, '+shifts.length+' Dienste und '+functions.length+' S-Funktionen.';renderAll()}
-
-function refreshFunctionSelects(){
-  const current=pFunction.value;
-  pFunction.innerHTML=functions.filter(f=>f.active).map(f=>`<option value="${f.id}">${f.id} – ${f.name}</option>`).join('');
-  if(functions.some(f=>f.id===current&&f.active))pFunction.value=current;
-}
-function renderFunctions(){
-  functionList.innerHTML=functions.map(f=>`<div class="item">
-    <div class="row">
-      <div><strong>${f.id} – ${f.name}</strong><div class="muted">${f.description||'Keine Beschreibung'}</div></div>
-      <span class="pill">${f.active?'Aktiv':'Deaktiviert'}</span>
-    </div>
-    <div class="actions" style="margin-top:9px">
-      <button class="btn small rename-function" data-id="${f.id}">Umbenennen</button>
-      <button class="btn small toggle-function" data-id="${f.id}">${f.active?'Deaktivieren':'Aktivieren'}</button>
-      <button class="btn small remove-function" data-id="${f.id}">Löschen</button>
-    </div>
-  </div>`).join('');
-  document.querySelectorAll('.rename-function').forEach(b=>b.onclick=()=>{
-    const f=functions.find(x=>x.id===b.dataset.id);
-    const name=prompt('Neue Bezeichnung für '+f.id+':',f.name);
-    if(name&&name.trim()){f.name=name.trim();renderAll()}
-  });
-  document.querySelectorAll('.toggle-function').forEach(b=>b.onclick=()=>{
-    const f=functions.find(x=>x.id===b.dataset.id);f.active=!f.active;renderAll()
-  });
-  document.querySelectorAll('.remove-function').forEach(b=>b.onclick=()=>{
-    const id=b.dataset.id;
-    const used=people.some(p=>p.fun===id)||shifts.some(s=>s.fun===id)||trainings.some(t=>t.name.startsWith(id));
-    if(used){functionMsg.textContent=id+' wird bereits verwendet und kann nur deaktiviert werden.';return}
-    functions=functions.filter(f=>f.id!==id);functionMsg.textContent=id+' wurde gelöscht.';renderAll()
-  });
-}
-function renderAll(){refreshFunctionSelects();renderDashboard();renderCalendar();renderPeople();renderFunctions();renderSwap();renderTraining()}
-
-calendarKw.onchange=renderCalendar;peopleSearch.oninput=renderPeople;addPerson.onclick=()=>{if(!pFirst.value||!pLast.value){peopleMsg.textContent='Vor- und Nachname erforderlich.';return}if(people.length>=300){peopleMsg.textContent='Demo-Grenze von 300 Personen erreicht.';return}const id='P'+String(Math.max(0,...people.map(p=>Number(p.id.slice(1))||0))+1).padStart(3,'0');people.push({id,first:pFirst.value,last:pLast.value,mail:pMail.value,fun:pFunction.value,location:pLocation.value,training:'Unbekannt'});peopleMsg.textContent='Person ergänzt.';pFirst.value=pLast.value=pMail.value='';renderAll()};
-addFunction.onclick=()=>{
- const code=fCode.value.trim().toUpperCase();
- const enteredName=fName.value.trim();
- const name=enteredName||('Benutzerdefinierte Funktion '+code);
- const description=fDescription.value.trim()||'Keine Beschreibung hinterlegt';
- if(!code){functionMsg.textContent='Nur das Kürzel ist erforderlich.';return}
- if(functions.some(f=>f.id===code)){functionMsg.textContent='Dieses Kürzel existiert bereits.';return}
- functions.push({id:code,name,description,active:true});
- functionMsg.textContent=code+' wurde ergänzt und ist sofort auswählbar.';
- fCode.value=fName.value=fDescription.value='';
- renderAll()
-};
-checkSwap.onclick=checkSwapLogic;autoFill.onclick=()=>alert(weekCount(Number(calendarKw.value))>=6?'Mindestbesetzung ist erfüllt.':'Mindestbesetzung nicht erfüllt. Es fehlen '+(6-weekCount(Number(calendarKw.value)))+' Personen.');exportExcel.onclick=exportWorkbook;exportCsv.onclick=exportCsv;importExcel.onclick=importWorkbook;simulateConnect.onclick=()=>{document.querySelectorAll('.dot').forEach(d=>d.classList.add('green'));integrationMsg.textContent='Demo-Verbindungen wurden simuliert. Keine echten Daten wurden übertragen.'};renderAll();
-</script>
-</body></html>
-nstplan Pro</strong><div style="color:#cbd5e1;font-size:13px">Erweiterte klickbare Demo · Krisenmanagement</div></div><span class="badge">Kapazität: bis 300 Personen</span></div></header>
-<main class="shell main">
-<div class="tabs">
-<button class="active" data-view="dashboard">Dashboard</button><button data-view="calendar">Kalender</button><button data-view="people">Personal</button><button data-view="functions">S-Funktionen</button><button data-view="swap">Diensttausch</button><button data-view="training">Ausbildungen</button><button data-view="excel">Excel</button><button data-view="integration">Integrationen</button>
-</div>
-
-<section id="dashboard" class="view stack">
-<div class="grid g4"><div class="card metric"><span class="muted">Personal aktiv</span><strong id="mPeople">0</strong></div><div class="card metric"><span class="muted">Dienste KW 31</span><strong id="mWeek">0</strong></div><div class="card metric"><span class="muted">Mindestbesetzung</span><strong>6</strong></div><div class="card metric"><span class="muted">Offene Warnungen</span><strong id="mWarnings">0</strong></div></div>
-<div class="grid g2"><div class="card"><h3>Besetzung nach Kalenderwoche</h3><div id="weekStatus" class="stack"></div></div><div class="card"><h3>Qualifikationshinweise</h3><div id="dashboardTraining" class="stack"></div></div></div>
-</section>
-
-<section id="calendar" class="view hidden stack">
-<div class="card"><div class="row"><div><h3>Kalenderübersicht</h3><div class="muted">KW 31 · 27. Juli bis 2. August 2026</div></div><div class="actions"><select id="calendarKw" style="width:auto"><option value="31">KW 31</option><option value="32">KW 32</option></select><button class="btn small" id="autoFill">Mindestbesetzung prüfen</button></div></div></div>
-<div class="card scroll"><div id="calendarGrid" class="calendar"></div></div>
-</section>
-
-<section id="people" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Personal ergänzen</h3><label>Vorname<input id="pFirst"></label><label>Nachname<input id="pLast"></label><label>E-Mail<input id="pMail" type="email"></label><label>S-Funktion<select id="pFunction"></select></label><label>Standort<input id="pLocation" value="Klagenfurt"></label><button class="btn primary" id="addPerson">Person hinzufügen</button><div id="peopleMsg" class="muted"></div></div>
-<div class="card"><div class="row"><div><h3>Personalübersicht</h3><div class="muted"><span id="peopleCount"></span> von 300 möglichen Personen</div></div><input id="peopleSearch" placeholder="Suchen…" style="max-width:220px"></div><div class="scroll"><table><thead><tr><th>Name</th><th>Funktion</th><th>Standort</th><th>Schulung</th><th>Aktion</th></tr></thead><tbody id="peopleBody"></tbody></table></div></div></div>
-</section>
-
-
-<section id="functions" class="view hidden stack">
-<div class="grid g2">
-  <div class="card stack">
-    <h3>S-Funktion ergänzen</h3>
-    <label>Kürzel<input id="fCode" placeholder="z. B. S7"></label>
-    <label>Bezeichnung<input id="fName" placeholder="z. B. Recht und Compliance"></label>
-    <label>Beschreibung<input id="fDescription" placeholder="Aufgaben und Verantwortungsbereich"></label>
-    <button class="btn primary" id="addFunction">Funktion hinzufügen</button>
-    <div id="functionMsg" class="muted"></div>
-  </div>
-  <div class="card">
-    <div class="row"><div><h3>Verfügbare S-Funktionen</h3><div class="muted">Neue Funktionen werden sofort in Personal, Schulungen, Tausch und Export übernommen.</div></div></div>
-    <div id="functionList" class="stack"></div>
-  </div>
-</div>
-</section>
-
-<section id="swap" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Diensttausch prüfen</h3><label>Abzugebender Dienst<select id="swapFrom"></select></label><label>Tauschpartner<select id="swapTo"></select></label><button class="btn primary" id="checkSwap">Tausch automatisch prüfen</button></div><div class="card"><h3>Prüfergebnis</h3><div id="swapResult" class="muted">Noch kein Tausch geprüft.</div></div></div>
-</section>
-
-<section id="training" class="view hidden stack">
-<div class="grid g4"><div class="card metric"><span class="muted">Qualifiziert</span><strong id="tQualified">0</strong></div><div class="card metric"><span class="muted">Bald fällig</span><strong id="tDue">0</strong></div><div class="card metric"><span class="muted">Abgelaufen</span><strong id="tExpired">0</strong></div><div class="card metric"><span class="muted">In Bearbeitung</span><strong id="tProgress">0</strong></div></div>
-<div class="grid g2"><div class="card"><h3>Ausbildungsstatistik nach S-Funktion</h3><div id="trainingChart" class="stack"></div></div><div class="card"><h3>Erinnerungen</h3><div id="trainingReminders" class="stack"></div></div></div>
-<div class="card scroll"><table><thead><tr><th>Person</th><th>Schulung</th><th>Status</th><th>Gültig bis</th><th>Quelle</th></tr></thead><tbody id="trainingBody"></tbody></table></div>
-</section>
-
-<section id="excel" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Excel exportieren</h3><div class="muted">Exportiert Personal, Dienste und Schulungen in eine Excel-Datei.</div><button class="btn primary" id="exportExcel">Excel-Datei erstellen</button><button class="btn" id="exportCsv">CSV-Fallback exportieren</button></div><div class="card stack"><h3>Excel importieren</h3><div class="muted">Unterstützt die Blätter Personal, Dienste und Schulungen aus der beiliegenden Vorlage.</div><input type="file" id="importFile" accept=".xlsx,.xls,.csv"><button class="btn" id="importExcel">Datei einlesen</button><div id="importMsg" class="muted"></div></div></div>
-<div class="card"><strong>Importvorlage:</strong> Die Datei <code>Dienstplan_Pro_Importvorlage.xlsx</code> liegt im selben Ordner wie diese Demo.</div>
-</section>
-
-<section id="integration" class="view hidden stack">
-<div class="grid g2"><div class="card stack"><h3>Einbindung</h3><div class="item integr"><div><strong>SharePoint</strong><div class="muted">Webpart, Microsoft Graph, SSO</div></div><span class="dot"></span></div><div class="item integr"><div><strong>iShare</strong><div class="muted">Einbettung bzw. API-Anbindung nach Systemfreigabe</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP SuccessFactors</strong><div class="muted">Personal- und Schulungsdaten synchronisieren</div></div><span class="dot"></span></div><div class="item integr"><div><strong>SAP</strong><div class="muted">Mitarbeiterstamm und Qualifikationen</div></div><span class="dot"></span></div></div><div class="card stack"><h3>Demo-Verbindungsstatus</h3><div class="callout">Die Demo simuliert die Integrationen. Für den echten Betrieb sind API-Zugänge, Berechtigungen, SSO, Datenmapping und Datenschutzfreigaben erforderlich.</div><button class="btn" id="simulateConnect">Verbindungen simulieren</button><div id="integrationMsg" class="muted"></div></div></div>
-</section>
-</main>
-<script>
-let functions=[
-{id:'S1',name:'Personal',description:'Personalübersicht, Alarmierung und Reserven',active:true},
-{id:'S2',name:'Lage',description:'Lagebild, Dokumentation und Berichte',active:true},
-{id:'S3',name:'Einsatz',description:'Maßnahmen und Einsatzkoordination',active:true},
-{id:'S4',name:'Versorgung',description:'Logistik, Material und Infrastruktur',active:true},
-{id:'S5',name:'Presse/Medien',description:'Externe Krisenkommunikation',active:true},
-{id:'S6',name:'Information/Kommunikation',description:'IKT und technische Verbindungen',active:true}
-];
-function fnMap(){return Object.fromEntries(functions.map(f=>[f.id,f.name]))}
-function functionName(id){return fnMap()[id]||'Unbekannte Funktion'}
-let people=[
-{id:'P001',first:'Anna',last:'Müller',mail:'anna@demo.at',fun:'S1',location:'Klagenfurt',training:'Abgeschlossen'},
-{id:'P002',first:'Markus',last:'Huber',mail:'markus@demo.at',fun:'S2',location:'Villach',training:'Bald fällig'},
-{id:'P003',first:'Sarah',last:'Novak',mail:'sarah@demo.at',fun:'S3',location:'Klagenfurt',training:'In Bearbeitung'},
-{id:'P004',first:'Peter',last:'Gruber',mail:'peter@demo.at',fun:'S4',location:'Villach',training:'Abgeschlossen'},
-{id:'P005',first:'Lisa',last:'Steiner',mail:'lisa@demo.at',fun:'S5',location:'Klagenfurt',training:'Abgeschlossen'},
-{id:'P006',first:'Daniel',last:'Maier',mail:'daniel@demo.at',fun:'S6',location:'Villach',training:'Abgeschlossen'},
-{id:'P007',first:'Eva',last:'Leitner',mail:'eva@demo.at',fun:'S1',location:'Klagenfurt',training:'Geplant'},
-{id:'P008',first:'Thomas',last:'Winkler',mail:'thomas@demo.at',fun:'S2',location:'Villach',training:'Abgeschlossen'}];
-let shifts=[
-{id:'D001',kw:31,date:'2026-07-27',pid:'P001',type:'Rufbereitschaft',fun:'S1',hours:8,oncall:1},
-{id:'D002',kw:31,date:'2026-07-27',pid:'P002',type:'Rufbereitschaft',fun:'S2',hours:8,oncall:1},
-{id:'D003',kw:31,date:'2026-07-27',pid:'P003',type:'Rufbereitschaft',fun:'S3',hours:8,oncall:1},
-{id:'D004',kw:31,date:'2026-07-27',pid:'P004',type:'Rufbereitschaft',fun:'S4',hours:8,oncall:1},
-{id:'D005',kw:31,date:'2026-07-27',pid:'P005',type:'Rufbereitschaft',fun:'S5',hours:8,oncall:1},
-{id:'D006',kw:31,date:'2026-07-27',pid:'P006',type:'Rufbereitschaft',fun:'S6',hours:8,oncall:1},
-{id:'D007',kw:32,date:'2026-08-03',pid:'P007',type:'Rufbereitschaft',fun:'S1',hours:40,oncall:7}];
-let trainings=[
-{pid:'P001',name:'S1 Personal',status:'Abgeschlossen',valid:'2027-03-05',source:'SAP SuccessFactors'},
-{pid:'P002',name:'S2 Lage',status:'Abgelaufen',valid:'2026-06-01',source:'SAP SuccessFactors'},
-{pid:'P003',name:'S3 Einsatz',status:'In Bearbeitung',valid:'',source:'SAP SuccessFactors'},
-{pid:'P004',name:'S4 Versorgung',status:'Abgeschlossen',valid:'2027-02-20',source:'SAP SuccessFactors'},
-{pid:'P005',name:'S5 Presse/Medien',status:'Abgeschlossen',valid:'2027-07-01',source:'SAP SuccessFactors'},
-{pid:'P006',name:'S6 IKT',status:'Abgeschlossen',valid:'2027-09-01',source:'SAP SuccessFactors'},
-{pid:'P007',name:'S1 Personal',status:'Geplant',valid:'',source:'SAP SuccessFactors'},
-{pid:'P008',name:'S2 Lage',status:'Abgeschlossen',valid:'2027-05-15',source:'SAP SuccessFactors'}];
-const days=['Mo','Di','Mi','Do','Fr','Sa','So'];
-function person(id){return people.find(p=>p.id===id)}
-function pName(id){const p=person(id);return p?p.first+' '+p.last:'Unbekannt'}
-function weekCount(kw){return new Set(shifts.filter(s=>s.kw==kw).map(s=>s.pid)).size}
-function personHours(pid,kw){return shifts.filter(s=>s.pid===pid&&s.kw===kw).reduce((a,s)=>a+s.hours,0)}
-function personOnCall(pid){return shifts.filter(s=>s.pid===pid).reduce((a,s)=>a+s.oncall,0)}
-function qualified(pid,fun){const p=person(pid),t=trainings.find(x=>x.pid===pid&&x.name.startsWith(fun));return p&&p.fun===fun&&t&&t.status==='Abgeschlossen'}
-function warnings(){let n=0;[31,32].forEach(k=>{if(weekCount(k)<6)n++});people.forEach(p=>{if(personHours(p.id,31)>60)n++;if(personOnCall(p.id)>10)n++});trainings.forEach(t=>{if(t.status==='Abgelaufen'||t.status==='In Bearbeitung'||t.status==='Geplant')n++});return n}
-
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.add('hidden'));b.classList.add('active');document.getElementById(b.dataset.view).classList.remove('hidden')});
-function renderDashboard(){mPeople.textContent=people.length;mWeek.textContent=weekCount(31);mWarnings.textContent=warnings();weekStatus.innerHTML=[31,32].map(k=>{const c=weekCount(k),ok=c>=6;return `<div class="${ok?'okbox':'badbox'}"><strong>KW ${k}: ${c} Personen/Dienste</strong><div class="muted">${ok?'Mindestbesetzung erfüllt':'Mindestens 6 erforderlich – es fehlen '+(6-c)}</div></div>`}).join('');dashboardTraining.innerHTML=trainings.filter(t=>t.status!=='Abgeschlossen').map(t=>`<div class="item"><strong>${pName(t.pid)}</strong><div class="muted">${t.name}: ${t.status}</div></div>`).join('')||'<div class="okbox">Keine offenen Schulungshinweise.</div>'}
-function renderCalendar(){const kw=Number(calendarKw.value),start=kw===31?new Date('2026-07-27'):new Date('2026-08-03');let html='<div class="calcell calhead">Person</div>'+days.map((d,i)=>`<div class="calcell calhead">${d}<div class="muted">${new Date(start.getTime()+i*86400000).toLocaleDateString('de-AT')}</div></div>`).join('');people.filter(p=>shifts.some(s=>s.pid===p.id&&s.kw===kw)).forEach(p=>{html+=`<div class="calcell"><strong>${p.first} ${p.last}</strong><div class="muted">${p.fun}</div></div>`;for(let i=0;i<7;i++){const date=new Date(start.getTime()+i*86400000).toISOString().slice(0,10),ss=shifts.filter(s=>s.pid===p.id&&s.date===date);html+=`<div class="calcell">${ss.map(s=>`<div class="shift"><strong>${s.fun}</strong><br>${s.type}<br>${s.hours} h</div>`).join('')}</div>`}});calendarGrid.innerHTML=html}
-function renderPeople(){const q=peopleSearch.value.toLowerCase();const list=people.filter(p=>(p.first+' '+p.last+' '+p.fun+' '+p.location).toLowerCase().includes(q));peopleCount.textContent=people.length;peopleBody.innerHTML=list.map(p=>`<tr><td><strong>${p.first} ${p.last}</strong><div class="muted">${p.mail}</div></td><td>${p.fun} – ${functionName(p.fun)}</td><td>${p.location}</td><td>${p.training}</td><td><button class="btn small remove" data-id="${p.id}">Entfernen</button></td></tr>`).join('');document.querySelectorAll('.remove').forEach(b=>b.onclick=()=>{if(shifts.some(s=>s.pid===b.dataset.id)){peopleMsg.textContent='Person hat noch Dienste und kann erst nach Entfernung der Dienste gelöscht werden.';return}people=people.filter(p=>p.id!==b.dataset.id);renderAll()})}
-function renderSwap(){swapFrom.innerHTML=shifts.map(s=>`<option value="${s.id}">${s.id} · ${pName(s.pid)} · ${s.fun} · KW ${s.kw}</option>`).join('');swapTo.innerHTML=people.map(p=>`<option value="${p.id}">${p.first} ${p.last} · ${p.fun} · ${p.training}</option>`).join('')}
-function checkSwapLogic(){const s=shifts.find(x=>x.id===swapFrom.value),target=person(swapTo.value);const reasons=[];if(target.id===s.pid)reasons.push('Die gleiche Person ist bereits eingeteilt.');if(target.fun!==s.fun)reasons.push(`${s.fun} darf nur mit ${s.fun} tauschen.`);if(!qualified(target.id,s.fun))reasons.push('Die erforderliche Funktionsausbildung ist nicht gültig abgeschlossen.');if(personHours(target.id,s.kw)+s.hours>60)reasons.push('Die konfigurierte Wochenarbeitszeit von 60 Stunden würde überschritten.');if(personOnCall(target.id)+s.oncall>10)reasons.push('Die konfigurierte Grenze der Rufbereitschaftstage würde überschritten.');const after=new Set(shifts.filter(x=>x.kw===s.kw&&x.id!==s.id).map(x=>x.pid));after.add(target.id);if(after.size<6)reasons.push('Die Mindestbesetzung von 6 Personen in der KW wäre nicht erfüllt.');swapResult.className=reasons.length?'badbox':'okbox';swapResult.innerHTML=reasons.length?`<strong>Tausch nicht möglich</strong><ul>${reasons.map(r=>`<li>${r}</li>`).join('')}</ul>`:`<strong>Tausch möglich</strong><div class="muted">Funktion, Schulung, Stunden, Rufbereitschaft und Mindestbesetzung wurden erfolgreich geprüft.</div><button class="btn primary small" id="applySwap">Tausch durchführen</button>`;if(!reasons.length)document.getElementById('applySwap').onclick=()=>{s.pid=target.id;swapResult.innerHTML='<strong>Tausch durchgeführt.</strong>';renderAll()}}
-function renderTraining(){const counts={q:0,d:0,e:0,p:0};trainings.forEach(t=>{if(t.status==='Abgeschlossen')counts.q++;if(t.status==='Bald fällig')counts.d++;if(t.status==='Abgelaufen')counts.e++;if(t.status==='In Bearbeitung'||t.status==='Geplant')counts.p++});tQualified.textContent=counts.q;tDue.textContent=counts.d;tExpired.textContent=counts.e;tProgress.textContent=counts.p;trainingChart.innerHTML=functions.filter(x=>x.active).map(x=>x.id).map(f=>{const total=people.filter(p=>p.fun===f).length,qual=people.filter(p=>p.fun===f&&qualified(p.id,f)).length,pct=total?Math.round(qual/total*100):0;return `<div class="chartrow"><span>${f} – ${functionName(f)}</span><div class="progress"><span style="width:${pct}%"></span></div><strong>${pct}%</strong></div>`}).join('');trainingReminders.innerHTML=trainings.filter(t=>t.status!=='Abgeschlossen').map(t=>`<div class="item"><strong>${pName(t.pid)}</strong><div class="muted">${t.name} · ${t.status}</div></div>`).join('');trainingBody.innerHTML=trainings.map(t=>`<tr><td>${pName(t.pid)}</td><td>${t.name}</td><td>${t.status}</td><td>${t.valid||'—'}</td><td>${t.source}</td></tr>`).join('')}
-function exportWorkbook(){if(typeof XLSX==='undefined'){alert('Excel-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen oder CSV verwenden.');return}const wb=XLSX.utils.book_new();const p=people.map(x=>({'Personal-ID':x.id,Vorname:x.first,Nachname:x.last,'E-Mail':x.mail,'S-Funktion':x.fun,Standort:x.location,Schulungsstatus:x.training}));const d=shifts.map(x=>({'Dienst-ID':x.id,KW:x.kw,Datum:x.date,'Personal-ID':x.pid,Name:pName(x.pid),Diensttyp:x.type,'S-Funktion':x.fun,'Dauer Stunden':x.hours,Rufbereitschaftstage:x.oncall}));const t=trainings.map(x=>({'Personal-ID':x.pid,Name:pName(x.pid),Schulung:x.name,Status:x.status,'Gültig bis':x.valid,Quelle:x.source}));XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(p),'Personal');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),'Dienste');const f=functions.map(x=>({'Kürzel':x.id,'Bezeichnung':x.name,'Beschreibung':x.description,'Aktiv':x.active?'Ja':'Nein'}));XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(t),'Schulungen');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(f),'S-Funktionen');XLSX.writeFile(wb,'Dienstplan_Pro_Export.xlsx')}
-function exportCsv(){const rows=[['Personal-ID','Vorname','Nachname','E-Mail','S-Funktion','Standort'],...people.map(p=>[p.id,p.first,p.last,p.mail,p.fun,p.location])];const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='Dienstplan_Personal.csv';a.click()}
-async function importWorkbook(){const file=importFile.files[0];if(!file){importMsg.textContent='Bitte zuerst eine Datei auswählen.';return}if(typeof XLSX==='undefined'){importMsg.textContent='Excel-Bibliothek konnte nicht geladen werden.';return}const data=await file.arrayBuffer(),wb=XLSX.read(data,{type:'array'});if(wb.Sheets.Personal){const rows=XLSX.utils.sheet_to_json(wb.Sheets.Personal,{defval:''});people=rows.map((r,i)=>({id:r['Personal-ID']||'P'+String(i+1).padStart(3,'0'),first:r.Vorname||'',last:r.Nachname||'',mail:r['E-Mail']||'',fun:r['S-Funktion']||'S1',location:r.Standort||'',training:r.Schulungsstatus||'Unbekannt'})).filter(p=>p.first||p.last)}if(wb.Sheets.Dienste){const rows=XLSX.utils.sheet_to_json(wb.Sheets.Dienste,{defval:''});shifts=rows.map((r,i)=>({id:r['Dienst-ID']||'D'+String(i+1).padStart(3,'0'),kw:Number(r.KW||31),date:typeof r.Datum==='number'?new Date((r.Datum-25569)*86400*1000).toISOString().slice(0,10):String(r.Datum).slice(0,10),pid:r['Personal-ID'],type:r.Diensttyp||'Rufbereitschaft',fun:r['S-Funktion']||'S1',hours:Number(r['Dauer Stunden']||0),oncall:Number(r.Rufbereitschaftstage||0)}))}
-if(wb.Sheets['S-Funktionen']){
- const rows=XLSX.utils.sheet_to_json(wb.Sheets['S-Funktionen'],{defval:''});
- const imported=rows.map(r=>({id:String(r['Kürzel']||'').trim().toUpperCase(),name:String(r['Bezeichnung']||'').trim(),description:String(r['Beschreibung']||'').trim(),active:String(r['Aktiv']||'Ja').toLowerCase()!=='nein'})).filter(f=>f.id&&f.name);
- if(imported.length)functions=imported;
-}
-importMsg.textContent='Import abgeschlossen: '+people.length+' Personen, '+shifts.length+' Dienste und '+functions.length+' S-Funktionen.';renderAll()}
-
-function refreshFunctionSelects(){
-  const current=pFunction.value;
-  pFunction.innerHTML=functions.filter(f=>f.active).map(f=>`<option value="${f.id}">${f.id} – ${f.name}</option>`).join('');
-  if(functions.some(f=>f.id===current&&f.active))pFunction.value=current;
-}
-function renderFunctions(){
-  functionList.innerHTML=functions.map(f=>`<div class="item">
-    <div class="row">
-      <div><strong>${f.id} – ${f.name}</strong><div class="muted">${f.description||'Keine Beschreibung'}</div></div>
-      <span class="pill">${f.active?'Aktiv':'Deaktiviert'}</span>
-    </div>
-    <div class="actions" style="margin-top:9px">
-      <button class="btn small rename-function" data-id="${f.id}">Umbenennen</button>
-      <button class="btn small toggle-function" data-id="${f.id}">${f.active?'Deaktivieren':'Aktivieren'}</button>
-      <button class="btn small remove-function" data-id="${f.id}">Löschen</button>
-    </div>
-  </div>`).join('');
-  document.querySelectorAll('.rename-function').forEach(b=>b.onclick=()=>{
-    const f=functions.find(x=>x.id===b.dataset.id);
-    const name=prompt('Neue Bezeichnung für '+f.id+':',f.name);
-    if(name&&name.trim()){f.name=name.trim();renderAll()}
-  });
-  document.querySelectorAll('.toggle-function').forEach(b=>b.onclick=()=>{
-    const f=functions.find(x=>x.id===b.dataset.id);f.active=!f.active;renderAll()
-  });
-  document.querySelectorAll('.remove-function').forEach(b=>b.onclick=()=>{
-    const id=b.dataset.id;
-    const used=people.some(p=>p.fun===id)||shifts.some(s=>s.fun===id)||trainings.some(t=>t.name.startsWith(id));
-    if(used){functionMsg.textContent=id+' wird bereits verwendet und kann nur deaktiviert werden.';return}
-    functions=functions.filter(f=>f.id!==id);functionMsg.textContent=id+' wurde gelöscht.';renderAll()
-  });
-}
-function renderAll(){refreshFunctionSelects();renderDashboard();renderCalendar();renderPeople();renderFunctions();renderSwap();renderTraining()}
-
-calendarKw.onchange=renderCalendar;peopleSearch.oninput=renderPeople;addPerson.onclick=()=>{if(!pFirst.value||!pLast.value){peopleMsg.textContent='Vor- und Nachname erforderlich.';return}if(people.length>=300){peopleMsg.textContent='Demo-Grenze von 300 Personen erreicht.';return}const id='P'+String(Math.max(0,...people.map(p=>Number(p.id.slice(1))||0))+1).padStart(3,'0');people.push({id,first:pFirst.value,last:pLast.value,mail:pMail.value,fun:pFunction.value,location:pLocation.value,training:'Unbekannt'});peopleMsg.textContent='Person ergänzt.';pFirst.value=pLast.value=pMail.value='';renderAll()};
-addFunction.onclick=()=>{
- const code=fCode.value.trim().toUpperCase(),name=fName.value.trim(),description=fDescription.value.trim();
- if(!code||!name){functionMsg.textContent='Kürzel und Bezeichnung sind erforderlich.';return}
  if(functions.some(f=>f.id===code)){functionMsg.textContent='Dieses Kürzel existiert bereits.';return}
  functions.push({id:code,name,description,active:true});
  functionMsg.textContent=code+' wurde ergänzt und ist sofort auswählbar.';
